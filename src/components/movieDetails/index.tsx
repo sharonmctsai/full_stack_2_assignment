@@ -10,6 +10,7 @@ import NavigationIcon from "@mui/icons-material/Navigation";
 import Fab from "@mui/material/Fab";
 import Drawer from "@mui/material/Drawer";
 import MovieReviews from '../movieReviews'
+import Avatar from "@mui/material/Avatar";
 
 const styles = {
     chipSet: {
@@ -31,12 +32,25 @@ const styles = {
     },
 };
 
+
 const MovieDetails: React.FC<MovieDetailsProps> = (movie) => {
 
     const [drawerOpen, setDrawerOpen] = useState(false); // New
 
     return (
         <>
+                avatar={
+          movie.favourite ? (
+            <Avatar sx={styles.avatar}>
+              <FavoriteIcon />
+            </Avatar>
+          ) : null
+        }
+        title={
+          <Typography variant="h5" component="p">
+            {movie.title}{" "}
+          </Typography>
+        }
             <Typography variant="h5" component="h3">
                 Overview
             </Typography>

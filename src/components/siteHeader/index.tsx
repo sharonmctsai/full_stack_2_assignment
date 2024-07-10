@@ -27,11 +27,13 @@ const SiteHeader: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
+//UI - New views/pages (3+).
   const menuOptions = [
     { label: "Home", path: "/" },
     { label: "Favorites", path: "/movies/favourites" },
-    { label: "Must Watch", path: "/" },
+    { label: "Watchlist", path: "/movies/watchlist" },
     { label: "Upcoming movies", path: "/" },
+    { label: "Most popular", path: "/" },
   ];
 
   const handleMenuSelect = (pageURL: string) => {
