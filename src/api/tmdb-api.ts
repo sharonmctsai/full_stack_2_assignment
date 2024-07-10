@@ -1,3 +1,29 @@
+const API_KEY = import.meta.env.VITE_TMDB_KEY;
+const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
+
+import { DiscoverMovies } from "../types/interfaces";
+
+export const getUpcomingMovies = async (): Promise<DiscoverMovies> => {
+  const response = await fetch(
+    `${import.meta.env.VITE_TMDB_BASE_URL}/movie/upcoming?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error('Failed to fetch upcoming movies');
+  }
+  return response.json();
+};
+
+export const getPopularMovies = async (): Promise<DiscoverMovies> => {
+  const response = await fetch(
+    `${import.meta.env.VITE_TMDB_BASE_URL}/movie/popular?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error('Failed to fetch popular movies');
+  }
+  return response.json();
+};
+
+
 export const getMovies = () => {
   return fetch(
     `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=1`
