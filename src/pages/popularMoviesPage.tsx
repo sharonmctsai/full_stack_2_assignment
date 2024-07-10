@@ -22,7 +22,7 @@ const genreFiltering = {
   condition: genreFilter,
 };
 
-const PopularPage: React.FC = () => {
+const PopularMoviesPage: React.FC = () => {
   const { data, error, isLoading, isError } = useQuery<DiscoverMovies, Error>("popular", getPopularMovies);
   const { filterValues, setFilterValues, filterFunction } = useFiltering(
     [titleFiltering, genreFiltering]
@@ -66,4 +66,4 @@ const PopularPage: React.FC = () => {
   );
 };
 
-export default PopularPage;
+export default PopularMoviesPage;
