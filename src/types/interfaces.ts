@@ -81,3 +81,26 @@ export interface BaseMovieProps {
     movies: BaseMovieProps[];
     action: (m: BaseMovieProps) => React.ReactNode;
   }
+
+  export interface DiscoverActors {
+    page: number;
+    results: Actor[];
+    total_pages: number;
+    total_results: number;
+  }
+  
+  export interface Actor {
+    id: number;
+    name: string;
+    popularity: number;
+    profile_path: string | null;
+    known_for: {
+      id: number;
+      media_type: "movie" | "tv";
+      title: string;
+      name: string;
+      poster_path: string | null;
+    }[];
+    known_for_department: string;
+  }
+  

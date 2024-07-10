@@ -2,6 +2,19 @@ const API_KEY = import.meta.env.VITE_TMDB_KEY;
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 
 import { DiscoverMovies } from "../types/interfaces";
+import { DiscoverActors } from "../types/interfaces"; // Adjust the interface based on your needs
+
+export const getPopularActors = async (): Promise<DiscoverActors> => {
+  const response = await fetch(
+    `${import.meta.env.VITE_TMDB_BASE_URL}/person/popular?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=1`
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch popular actors');
+  }
+
+  return response.json();
+};
 
 export const getUpcomingMovies = async (): Promise<DiscoverMovies> => {
   const response = await fetch(
