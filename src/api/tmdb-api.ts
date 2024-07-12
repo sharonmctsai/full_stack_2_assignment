@@ -1,7 +1,7 @@
 const API_KEY = import.meta.env.VITE_TMDB_KEY;
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 
-import { DiscoverMovies } from "../types/interfaces";
+import { ActorDetailsProps, DiscoverMovies } from "../types/interfaces";
 import { DiscoverActors } from "../types/interfaces"; // Adjust the interface based on your needs
 
 export const getPopularActors = async (): Promise<DiscoverActors> => {
@@ -102,3 +102,14 @@ export const getMovie = (id: string) => {
       throw error
    });
   };
+
+  export const fetchActorDetails = async (actorId: string): Promise<ActorDetailsProps> => {
+    const response = await fetch(`https://api.themoviedb.org/3/person/${actorId}?api_key=${API_KEY}`);
+    if (!response.ok) {
+      const errorDetail = await response.json();
+      console.error('Failed to fetch actor details:', errorDetail);
+      throw new Error('Failed to fetch actor details');
+    }
+    return response.json();
+  };
+  
