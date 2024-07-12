@@ -52,7 +52,7 @@ const SiteHeader: React.FC = () => {
 
   return (
     <>
-      <AppBar position="fixed" elevation={0} color="primary">
+      <AppBar position="fixed" elevation={0} color="secondary">
         <Toolbar>
           <Typography variant="h4" sx={styles.title}>
             TMDB Client

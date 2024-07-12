@@ -16,13 +16,13 @@ const ActorDetailsPage: React.FC = () => {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2 style={{ fontSize: '32px' }}>{actor.name}</h2>
+    <div style={{ padding: '100px' }}>
+      <h2 style={{ fontSize: '50px' }}>{actor.name}</h2>
       {actor.profile_path && (
         <img
           src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
           alt={actor.name}
-          style={{ width: '200px', borderRadius: '8px', marginBottom: '16px' }}
+          style={{ width: '400px', borderRadius: '8px', marginBottom: '36px' }}
         />
       )}
       <h4 style={{ fontSize: '24px' }}>Biography: </h4><p>{actor?.biography}</p>

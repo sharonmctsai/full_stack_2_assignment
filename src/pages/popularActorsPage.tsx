@@ -27,9 +27,10 @@ const PopularActorsPage: React.FC = () => {
             <Card>
               <CardMedia
                 component="img"
-                height="400"
+                height="600"
                 image={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
                 alt={actor.name}
+
               />
               <CardContent>
                 <Typography variant="h6" component="h3">{actor.name}</Typography>
