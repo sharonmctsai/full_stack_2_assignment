@@ -1,62 +1,48 @@
-// PopularActorsPage.tsx
-
-import React, { useEffect, useState } from "react";
-import { getPopularActors } from "../api/tmdb-api";
-import Spinner from "../components/spinner";
-import { Actor, DiscoverActors } from "../types/interfaces";
+// src/pages/PopularActorsPage.tsx
+import React from 'react';
+import { useQuery } from 'react-query';
+import { getPopularActors } from '../api/tmdb-api';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
+import { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import Spinner from '../components/spinner';
+import { DiscoverActors, Actor } from '../types/interfaces';
 
 const PopularActorsPage: React.FC = () => {
-  const [actors, setActors] = useState<Actor[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, error, isLoading, isError } = useQuery<DiscoverActors>('popularActors', getPopularActors);
 
-  useEffect(() => {
-    const fetchPopularActors = async () => {
-      try {
-        setIsLoading(true);
-        const data: DiscoverActors = await getPopularActors();
-        setActors(data.results);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPopularActors();
-  }, []);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (isLoading) return <Spinner />;
+  if (isError) return <h1>{error.message}</h1>;
 
   return (
     <div>
-      <h1>Popular Actors</h1>
-      <ul>
-        {actors.map((actor) => (
-          <li key={actor.id}>
-            <img
-              src={
-                actor.profile_path
-                  ? `https://image.tmdb.org/t/p/w500/${actor.profile_path}`
-                  : "https://via.placeholder.com/150"
-              }
-              alt={actor.name}
-              style={{ width: 150, height: "auto", marginRight: 10 }}
-            />
-            <div>
-              <h2>{actor.name}</h2>
-              <p>Popularity: {actor.popularity}</p>
-              <p>Known For: {actor.known_for.map((item) => item.title || item.name).join(", ")}</p>
-            </div>
-          </li>
+      <Typography variant="h2" component="h1">Popular Actors</Typography>
+      <Grid container spacing={2}>
+        {data?.results.map((actor: Actor) => (
+          <Grid item key={actor.id} xs={12} sm={6} md={4} lg={3}>
+            <Card>
+              <CardMedia
+                component="img"
+                height="400"
+                image={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+                alt={actor.name}
+              />
+              <CardContent>
+                <Typography variant="h6" component="h3">{actor.name}</Typography>
+                <Button variant="contained" color="primary">
+                  <Link to={`/actors/${actor.id}`} style={{ color: 'white', textDecoration: 'none' }}>
+                    More Info
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </ul>
+      </Grid>
     </div>
   );
 };

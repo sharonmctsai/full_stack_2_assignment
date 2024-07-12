@@ -8,40 +8,42 @@ import { styled } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-
 const styles = {
-    title: {
-      flexGrow: 1,
-    },
-  };
+  title: {
+    flexGrow: 1,
+  },
+  activeButton: {
+    backgroundColor: 'rgba(255, 255, 153,0.5)',
+  },
+};
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader: React.FC = () => {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement|null>(null);
+  const location = useLocation();
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
-//UI - New views/pages (3+).
   const menuOptions = [
     { label: "Home", path: "/" },
     { label: "Favorites", path: "/movies/favourites" },
     { label: "Watchlist", path: "/movies/watchlist" },
-    { label: "Upcoming ", path: "/movies/upcoming" },
-    { label: "Popular Movies", path: "/movies/popular" },
-    { label: "Popular Actors", path: "/actors/popular" }, // Added "Popular Actors"
-    { label: "Create Fantasy Movie", path: "/movies/fantasy/add" }, // New option
-
+    { label: "Upcoming", path: "/movies/upcoming" },
+    { label: "Most Popular Movies", path: "/movies/popular" },
+    { label: "Most Popular Actors", path: "/actors/popular" },
+    { label: "Create Fantasy Movie", path: "/movies/fantasy/add" },
   ];
 
   const handleMenuSelect = (pageURL: string) => {
     navigate(pageURL);
+    setAnchorEl(null);  // Close the menu when an item is selected
   };
 
   const handleMenu = (event: MouseEvent<HTMLButtonElement>) => {
@@ -89,6 +91,11 @@ const SiteHeader: React.FC = () => {
                   <MenuItem
                     key={opt.label}
                     onClick={() => handleMenuSelect(opt.path)}
+                    style={
+                      location.pathname === opt.path
+                        ? styles.activeButton
+                        : undefined
+                    }
                   >
                     {opt.label}
                   </MenuItem>
@@ -102,6 +109,11 @@ const SiteHeader: React.FC = () => {
                   key={opt.label}
                   color="inherit"
                   onClick={() => handleMenuSelect(opt.path)}
+                  sx={
+                    location.pathname === opt.path
+                      ? styles.activeButton
+                      : undefined
+                  }
                 >
                   {opt.label}
                 </Button>
