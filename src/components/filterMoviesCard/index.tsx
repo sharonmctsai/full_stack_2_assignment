@@ -32,10 +32,12 @@ interface FilterMoviesCardProps {
   titleFilter: string;
   genreFilter: string;
   releaseDateFilter: string;
-  popularityFilter: string; // Add this line
+  popularityFilter: string;
+  runtimeFilter: string;
+  sortOption: string; // Add this line
 }
 
-const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreFilter, releaseDateFilter, popularityFilter, onUserInput }) => {
+const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreFilter, releaseDateFilter, popularityFilter, runtimeFilter, sortOption, onUserInput }) => {
   const { data, error, isLoading, isError } = useQuery<GenreData, Error>("genres", getGenres);
 
   if (isLoading) {
@@ -67,6 +69,14 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
 
   const handlePopularityChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleChange(e, "popularity", e.target.value);
+  };
+
+  const handleRuntimeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleChange(e, "runtime", e.target.value);
+  };
+
+  const handleSortChange = (e: SelectChangeEvent) => {
+    handleChange(e, "sort", e.target.value);
   };
 
   return (
@@ -125,6 +135,18 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
               shrink: true,
             }}
           />
+          <TextField
+            sx={styles.formControl}
+            id="runtime"
+            label="Runtime"
+            type="number"
+            value={runtimeFilter}
+            variant="filled"
+            onChange={handleRuntimeChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
         </CardContent>
       </Card>
       <Card sx={styles.root} variant="outlined">
@@ -133,6 +155,20 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
             <SortIcon fontSize="large" />
             Sort the movies.
           </Typography>
+          <FormControl sx={styles.formControl}>
+            <InputLabel id="sort-label">Sort By</InputLabel>
+            <Select
+              labelId="sort-label"
+              id="sort-select"
+              value={sortOption}
+              onChange={handleSortChange}
+            >
+              <MenuItem value="title">Title</MenuItem>
+              <MenuItem value="release_date">Release Date</MenuItem>
+              <MenuItem value="popularity">Popularity</MenuItem>
+              <MenuItem value="runtime">Runtime</MenuItem>
+            </Select>
+          </FormControl>
         </CardContent>
       </Card>
     </>

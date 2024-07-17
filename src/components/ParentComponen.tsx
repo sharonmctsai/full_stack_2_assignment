@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import FilterMoviesCard from './components/FilterMoviesCard';
-import MovieList from './components/MovieList'; // Assuming you have a MovieList component to display movies
-import { getMovies } from './api/tmdb-api'; // Assuming this API call fetches the list of movies
-import { Movie } from './types/interfaces'; // Assuming this is the type for movie data
+import MovieList from './components/MovieList';
+import { getMovies } from './api/tmdb-api';
+import { Movie } from './types/interfaces';
 
 const ParentComponent: React.FC = () => {
   const [titleFilter, setTitleFilter] = useState<string>('');
-  const [genreFilter, setGenreFilter] = useState<string>('0'); // Default to "All"
+  const [genreFilter, setGenreFilter] = useState<string>('0');
   const [releaseDateFilter, setReleaseDateFilter] = useState<string>('');
   const [popularityFilter, setPopularityFilter] = useState<string>('');
-  const [runtimeFilter, setRuntimeFilter] = useState<string>(''); // Add this line
+  const [runtimeFilter, setRuntimeFilter] = useState<string>('');
+  const [sortOption, setSortOption] = useState<string>('title'); // Add this line
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
 
@@ -55,8 +56,24 @@ const ParentComponent: React.FC = () => {
       );
     }
 
+    // Apply sorting
+    filtered = filtered.sort((a, b) => {
+      switch (sortOption) {
+        case 'title':
+          return a.title.localeCompare(b.title);
+        case 'release_date':
+          return new Date(b.release_date).getTime() - new Date(a.release_date).getTime();
+        case 'popularity':
+          return b.popularity - a.popularity;
+        case 'runtime':
+          return b.runtime - a.runtime;
+        default:
+          return 0;
+      }
+    });
+
     setFilteredMovies(filtered);
-  }, [titleFilter, genreFilter, releaseDateFilter, popularityFilter, runtimeFilter, allMovies]);
+  }, [titleFilter, genreFilter, releaseDateFilter, popularityFilter, runtimeFilter, sortOption, allMovies]);
 
   const handleUserInput = (filter: string, value: string) => {
     switch (filter) {
@@ -75,6 +92,9 @@ const ParentComponent: React.FC = () => {
       case 'runtime':
         setRuntimeFilter(value);
         break;
+      case 'sort':
+        setSortOption(value);
+        break;
       default:
         break;
     }
@@ -87,7 +107,8 @@ const ParentComponent: React.FC = () => {
         genreFilter={genreFilter}
         releaseDateFilter={releaseDateFilter}
         popularityFilter={popularityFilter}
-        runtimeFilter={runtimeFilter} // Pass the runtime filter
+        runtimeFilter={runtimeFilter}
+        sortOption={sortOption} // Pass the sort option
         onUserInput={handleUserInput}
       />
       <MovieList movies={filteredMovies} action={() => {}} />
