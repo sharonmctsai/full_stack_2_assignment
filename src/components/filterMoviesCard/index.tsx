@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { FilterOption, GenreData } from "../../types/interfaces"; 
+import { FilterOption, GenreData } from "../../types/interfaces";
 import { SelectChangeEvent } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -28,13 +28,14 @@ const styles = {
 };
 
 interface FilterMoviesCardProps {
-  onUserInput: (f: FilterOption, s: string)  => void; 
+  onUserInput: (f: FilterOption, s: string) => void;
   titleFilter: string;
   genreFilter: string;
-  releaseDateFilter: string; // Add release date filter prop
+  releaseDateFilter: string;
+  popularityFilter: string; // Add this line
 }
 
-const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreFilter, releaseDateFilter, onUserInput }) => {
+const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreFilter, releaseDateFilter, popularityFilter, onUserInput }) => {
   const { data, error, isLoading, isError } = useQuery<GenreData, Error>("genres", getGenres);
 
   if (isLoading) {
@@ -48,14 +49,13 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
     genres.unshift({ id: "0", name: "All" });
   }
 
-  const handleChange = (e: SelectChangeEvent | ChangeEvent<HTMLInputElement>, type: FilterOption, value: string) => {
-    e.preventDefault();
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, type: FilterOption, value: string) => {
     onUserInput(type, value);
   };
 
   const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleChange(e, "title", e.target.value);
-  }
+  };
 
   const handleGenreChange = (e: SelectChangeEvent) => {
     handleChange(e, "genre", e.target.value);
@@ -63,6 +63,10 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
 
   const handleReleaseDateChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleChange(e, "releaseDate", e.target.value);
+  };
+
+  const handlePopularityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleChange(e, "popularity", e.target.value);
   };
 
   return (
@@ -103,11 +107,23 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
             label="Release Date"
             type="date"
             value={releaseDateFilter}
+            variant="filled"
+            onChange={handleReleaseDateChange}
             InputLabelProps={{
               shrink: true,
             }}
+          />
+          <TextField
+            sx={styles.formControl}
+            id="popularity"
+            label="Popularity"
+            type="number"
+            value={popularityFilter}
             variant="filled"
-            onChange={handleReleaseDateChange}
+            onChange={handlePopularityChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
         </CardContent>
       </Card>
@@ -121,6 +137,6 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
       </Card>
     </>
   );
-}
+};
 
 export default FilterMoviesCard;
