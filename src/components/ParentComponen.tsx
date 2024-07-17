@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import FilterMoviesCard from './components/filterMoviesCard';
+import FilterMoviesCard from './components/FilterMoviesCard';
 import MovieList from './components/MovieList'; // Assuming you have a MovieList component to display movies
 import { getMovies } from './api/tmdb-api'; // Assuming this API call fetches the list of movies
 import { Movie } from './types/interfaces'; // Assuming this is the type for movie data
@@ -8,7 +8,8 @@ const ParentComponent: React.FC = () => {
   const [titleFilter, setTitleFilter] = useState<string>('');
   const [genreFilter, setGenreFilter] = useState<string>('0'); // Default to "All"
   const [releaseDateFilter, setReleaseDateFilter] = useState<string>('');
-  const [popularityFilter, setPopularityFilter] = useState<string>(''); // Add this line
+  const [popularityFilter, setPopularityFilter] = useState<string>('');
+  const [runtimeFilter, setRuntimeFilter] = useState<string>(''); // Add this line
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
 
@@ -48,8 +49,14 @@ const ParentComponent: React.FC = () => {
       );
     }
 
+    if (runtimeFilter) {
+      filtered = filtered.filter((movie) =>
+        movie.runtime <= parseInt(runtimeFilter)
+      );
+    }
+
     setFilteredMovies(filtered);
-  }, [titleFilter, genreFilter, releaseDateFilter, popularityFilter, allMovies]);
+  }, [titleFilter, genreFilter, releaseDateFilter, popularityFilter, runtimeFilter, allMovies]);
 
   const handleUserInput = (filter: string, value: string) => {
     switch (filter) {
@@ -65,6 +72,9 @@ const ParentComponent: React.FC = () => {
       case 'popularity':
         setPopularityFilter(value);
         break;
+      case 'runtime':
+        setRuntimeFilter(value);
+        break;
       default:
         break;
     }
@@ -76,7 +86,8 @@ const ParentComponent: React.FC = () => {
         titleFilter={titleFilter}
         genreFilter={genreFilter}
         releaseDateFilter={releaseDateFilter}
-        popularityFilter={popularityFilter} // Pass the popularity filter
+        popularityFilter={popularityFilter}
+        runtimeFilter={runtimeFilter} // Pass the runtime filter
         onUserInput={handleUserInput}
       />
       <MovieList movies={filteredMovies} action={() => {}} />
