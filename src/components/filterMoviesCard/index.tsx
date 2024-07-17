@@ -1,5 +1,5 @@
-import React, { ChangeEvent } from "react";  // useState/useEffect redundant 
-import { FilterOption, GenreData } from "../../types/interfaces"; //include GenreData interface 
+import React, { ChangeEvent } from "react";
+import { FilterOption, GenreData } from "../../types/interfaces"; 
 import { SelectChangeEvent } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -20,7 +20,6 @@ const styles = {
     maxWidth: 345,
   },
   media: { height: 300 },
- 
   formControl: {
     margin: 1,
     minWidth: 220,
@@ -28,14 +27,14 @@ const styles = {
   },
 };
 
-
 interface FilterMoviesCardProps {
-  onUserInput: (f: FilterOption, s: string)  => void; // Add this line
+  onUserInput: (f: FilterOption, s: string)  => void; 
   titleFilter: string;
   genreFilter: string;
+  releaseDateFilter: string; // Add release date filter prop
 }
 
-const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreFilter, onUserInput }) => {
+const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreFilter, releaseDateFilter, onUserInput }) => {
   const { data, error, isLoading, isError } = useQuery<GenreData, Error>("genres", getGenres);
 
   if (isLoading) {
@@ -49,56 +48,70 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
     genres.unshift({ id: "0", name: "All" });
   }
 
-  const handleChange = (e: SelectChangeEvent, type: FilterOption, value: string) => {
-    e.preventDefault()
-      onUserInput(type, value)
+  const handleChange = (e: SelectChangeEvent | ChangeEvent<HTMLInputElement>, type: FilterOption, value: string) => {
+    e.preventDefault();
+    onUserInput(type, value);
   };
 
   const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e, "title", e.target.value)
+    handleChange(e, "title", e.target.value);
   }
 
   const handleGenreChange = (e: SelectChangeEvent) => {
-    handleChange(e, "genre", e.target.value)
+    handleChange(e, "genre", e.target.value);
   };
-  
+
+  const handleReleaseDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleChange(e, "releaseDate", e.target.value);
+  };
+
   return (
     <>
-    <Card sx={styles.root} variant="outlined">
-      <CardContent>
-        <Typography variant="h5" component="h1">
-          <FilterAltIcon fontSize="large" />
-          Filter the movies.
-        </Typography>
-        <TextField
-      sx={styles.formControl}
-      id="filled-search"
-      label="Search field"
-      type="search"
-      value={titleFilter}
-      variant="filled"
-      onChange={handleTextChange}
-    />
-        <FormControl sx={styles.formControl}>
-          <InputLabel id="genre-label">Genre</InputLabel>
-          <Select
-      labelId="genre-label"
-      id="genre-select"
-      value={genreFilter}
-      onChange={handleGenreChange}
-    >
-            {genres.map((genre) => {
-              return (
+      <Card sx={styles.root} variant="outlined">
+        <CardContent>
+          <Typography variant="h5" component="h1">
+            <FilterAltIcon fontSize="large" />
+            Filter the movies.
+          </Typography>
+          <TextField
+            sx={styles.formControl}
+            id="filled-search"
+            label="Search field"
+            type="search"
+            value={titleFilter}
+            variant="filled"
+            onChange={handleTextChange}
+          />
+          <FormControl sx={styles.formControl}>
+            <InputLabel id="genre-label">Genre</InputLabel>
+            <Select
+              labelId="genre-label"
+              id="genre-select"
+              value={genreFilter}
+              onChange={handleGenreChange}
+            >
+              {genres.map((genre) => (
                 <MenuItem key={genre.id} value={genre.id}>
                   {genre.name}
                 </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-      </CardContent>
-    </Card>
-    <Card sx={styles.root} variant="outlined">
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            sx={styles.formControl}
+            id="release-date"
+            label="Release Date"
+            type="date"
+            value={releaseDateFilter}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="filled"
+            onChange={handleReleaseDateChange}
+          />
+        </CardContent>
+      </Card>
+      <Card sx={styles.root} variant="outlined">
         <CardContent>
           <Typography variant="h5" component="h1">
             <SortIcon fontSize="large" />
@@ -106,7 +119,7 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
           </Typography>
         </CardContent>
       </Card>
-      </>
+    </>
   );
 }
 
