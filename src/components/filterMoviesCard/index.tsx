@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { FilterOption, GenreData } from "../../types/interfaces";
+import { FilterOption, GenreData } from "../../types/interfaces"; 
 import { SelectChangeEvent } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -8,7 +8,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import SortIcon from '@mui/icons-material/Sort';
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { getGenres } from "../../api/tmdb-api";
@@ -19,7 +18,6 @@ const styles = {
   root: {
     maxWidth: 345,
   },
-  media: { height: 300 },
   formControl: {
     margin: 1,
     minWidth: 220,
@@ -28,16 +26,20 @@ const styles = {
 };
 
 interface FilterMoviesCardProps {
-  onUserInput: (f: FilterOption, s: string) => void;
+  onUserInput: (f: FilterOption, s: string)  => void; 
   titleFilter: string;
   genreFilter: string;
-  releaseDateFilter: string;
-  popularityFilter: string;
-  runtimeFilter: string;
-  sortOption: string; // Add this line
+  releaseDateBeforeFilter: string;
+  releaseDateAfterFilter: string;
 }
 
-const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreFilter, releaseDateFilter, popularityFilter, runtimeFilter, sortOption, onUserInput }) => {
+const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
+  titleFilter,
+  genreFilter,
+  releaseDateBeforeFilter,
+  releaseDateAfterFilter,
+  onUserInput,
+}) => {
   const { data, error, isLoading, isError } = useQuery<GenreData, Error>("genres", getGenres);
 
   if (isLoading) {
@@ -51,7 +53,8 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
     genres.unshift({ id: "0", name: "All" });
   }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, type: FilterOption, value: string) => {
+  const handleChange = (e: SelectChangeEvent | ChangeEvent<HTMLInputElement>, type: FilterOption, value: string) => {
+    e.preventDefault();
     onUserInput(type, value);
   };
 
@@ -63,20 +66,12 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
     handleChange(e, "genre", e.target.value);
   };
 
-  const handleReleaseDateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e, "releaseDate", e.target.value);
+  const handleReleaseDateBeforeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleChange(e, "releaseDateBefore", e.target.value);
   };
 
-  const handlePopularityChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e, "popularity", e.target.value);
-  };
-
-  const handleRuntimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e, "runtime", e.target.value);
-  };
-
-  const handleSortChange = (e: SelectChangeEvent) => {
-    handleChange(e, "sort", e.target.value);
+  const handleReleaseDateAfterChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleChange(e, "releaseDateAfter", e.target.value);
   };
 
   return (
@@ -113,66 +108,32 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({ titleFilter, genreF
           </FormControl>
           <TextField
             sx={styles.formControl}
-            id="release-date"
-            label="Release Date"
+            id="release-date-before"
+            label="Released Before"
             type="date"
-            value={releaseDateFilter}
-            variant="filled"
-            onChange={handleReleaseDateChange}
+            value={releaseDateBeforeFilter}
             InputLabelProps={{
               shrink: true,
             }}
+            variant="filled"
+            onChange={handleReleaseDateBeforeChange}
           />
           <TextField
             sx={styles.formControl}
-            id="popularity"
-            label="Popularity"
-            type="number"
-            value={popularityFilter}
-            variant="filled"
-            onChange={handlePopularityChange}
+            id="release-date-after"
+            label="Released After"
+            type="date"
+            value={releaseDateAfterFilter}
             InputLabelProps={{
               shrink: true,
             }}
-          />
-          <TextField
-            sx={styles.formControl}
-            id="runtime"
-            label="Runtime"
-            type="number"
-            value={runtimeFilter}
             variant="filled"
-            onChange={handleRuntimeChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
+            onChange={handleReleaseDateAfterChange}
           />
-        </CardContent>
-      </Card>
-      <Card sx={styles.root} variant="outlined">
-        <CardContent>
-          <Typography variant="h5" component="h1">
-            <SortIcon fontSize="large" />
-            Sort the movies.
-          </Typography>
-          <FormControl sx={styles.formControl}>
-            <InputLabel id="sort-label">Sort By</InputLabel>
-            <Select
-              labelId="sort-label"
-              id="sort-select"
-              value={sortOption}
-              onChange={handleSortChange}
-            >
-              <MenuItem value="title">Title</MenuItem>
-              <MenuItem value="release_date">Release Date</MenuItem>
-              <MenuItem value="popularity">Popularity</MenuItem>
-              <MenuItem value="runtime">Runtime</MenuItem>
-            </Select>
-          </FormControl>
         </CardContent>
       </Card>
     </>
   );
-};
+}
 
 export default FilterMoviesCard;

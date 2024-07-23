@@ -35,13 +35,7 @@ export interface MovieDetailsProps extends BaseMovieProps {
     name: string;
   }[];
 }
-// Update the FilterOption type
-export type FilterOption = "title" | "genre" | "releaseDate";
-
-// If not already included, update the GenreData interface
-export interface GenreData {
-  genres: { id: string; name: string }[];
-}
+export type FilterOption = "title" | "genre" ;
 
 export interface BaseMovieListProps {
   movies: BaseMovieProps[];

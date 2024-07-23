@@ -7,10 +7,13 @@ import { Movie } from './types/interfaces';
 const ParentComponent: React.FC = () => {
   const [titleFilter, setTitleFilter] = useState<string>('');
   const [genreFilter, setGenreFilter] = useState<string>('0');
-  const [releaseDateFilter, setReleaseDateFilter] = useState<string>('');
-  const [popularityFilter, setPopularityFilter] = useState<string>('');
-  const [runtimeFilter, setRuntimeFilter] = useState<string>('');
-  const [sortOption, setSortOption] = useState<string>('title'); // Add this line
+  const [releaseDateStart, setReleaseDateStart] = useState<string>('');
+  const [releaseDateEnd, setReleaseDateEnd] = useState<string>('');
+  const [popularityMin, setPopularityMin] = useState<string>('');
+  const [popularityMax, setPopularityMax] = useState<string>('');
+  const [runtimeMin, setRuntimeMin] = useState<string>('');
+  const [runtimeMax, setRuntimeMax] = useState<string>('');
+  const [sortOption, setSortOption] = useState<string>('title');
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
 
@@ -38,25 +41,42 @@ const ParentComponent: React.FC = () => {
       );
     }
 
-    if (releaseDateFilter) {
+    if (releaseDateStart) {
       filtered = filtered.filter((movie) =>
-        new Date(movie.release_date) >= new Date(releaseDateFilter)
+        new Date(movie.release_date) >= new Date(releaseDateStart)
       );
     }
 
-    if (popularityFilter) {
+    if (releaseDateEnd) {
       filtered = filtered.filter((movie) =>
-        movie.popularity >= parseFloat(popularityFilter)
+        new Date(movie.release_date) <= new Date(releaseDateEnd)
       );
     }
 
-    if (runtimeFilter) {
+    if (popularityMin) {
       filtered = filtered.filter((movie) =>
-        movie.runtime <= parseInt(runtimeFilter)
+        movie.popularity >= parseFloat(popularityMin)
       );
     }
 
-    // Apply sorting
+    if (popularityMax) {
+      filtered = filtered.filter((movie) =>
+        movie.popularity <= parseFloat(popularityMax)
+      );
+    }
+
+    if (runtimeMin) {
+      filtered = filtered.filter((movie) =>
+        movie.runtime >= parseInt(runtimeMin)
+      );
+    }
+
+    if (runtimeMax) {
+      filtered = filtered.filter((movie) =>
+        movie.runtime <= parseInt(runtimeMax)
+      );
+    }
+
     filtered = filtered.sort((a, b) => {
       switch (sortOption) {
         case 'title':
@@ -73,7 +93,7 @@ const ParentComponent: React.FC = () => {
     });
 
     setFilteredMovies(filtered);
-  }, [titleFilter, genreFilter, releaseDateFilter, popularityFilter, runtimeFilter, sortOption, allMovies]);
+  }, [titleFilter, genreFilter, releaseDateStart, releaseDateEnd, popularityMin, popularityMax, runtimeMin, runtimeMax, sortOption, allMovies]);
 
   const handleUserInput = (filter: string, value: string) => {
     switch (filter) {
@@ -83,14 +103,23 @@ const ParentComponent: React.FC = () => {
       case 'genre':
         setGenreFilter(value);
         break;
-      case 'releaseDate':
-        setReleaseDateFilter(value);
+      case 'releaseDateStart':
+        setReleaseDateStart(value);
         break;
-      case 'popularity':
-        setPopularityFilter(value);
+      case 'releaseDateEnd':
+        setReleaseDateEnd(value);
         break;
-      case 'runtime':
-        setRuntimeFilter(value);
+      case 'popularityMin':
+        setPopularityMin(value);
+        break;
+      case 'popularityMax':
+        setPopularityMax(value);
+        break;
+      case 'runtimeMin':
+        setRuntimeMin(value);
+        break;
+      case 'runtimeMax':
+        setRuntimeMax(value);
         break;
       case 'sort':
         setSortOption(value);
@@ -105,10 +134,13 @@ const ParentComponent: React.FC = () => {
       <FilterMoviesCard
         titleFilter={titleFilter}
         genreFilter={genreFilter}
-        releaseDateFilter={releaseDateFilter}
-        popularityFilter={popularityFilter}
-        runtimeFilter={runtimeFilter}
-        sortOption={sortOption} // Pass the sort option
+        releaseDateStart={releaseDateStart}
+        releaseDateEnd={releaseDateEnd}
+        popularityMin={popularityMin}
+        popularityMax={popularityMax}
+        runtimeMin={runtimeMin}
+        runtimeMax={runtimeMax}
+        sortOption={sortOption}
         onUserInput={handleUserInput}
       />
       <MovieList movies={filteredMovies} action={() => {}} />
