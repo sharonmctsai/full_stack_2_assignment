@@ -57,6 +57,7 @@ const PopularMoviesPage: React.FC = () => {
           return <AddToFavouritesIcon {...movie} />
         }}
       />
+      
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
         titleFilter={filterValues[0].value}
