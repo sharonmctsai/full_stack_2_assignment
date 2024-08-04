@@ -39,26 +39,14 @@ const MovieDetails: React.FC<MovieDetailsProps> = (movie) => {
 
     return (
         <>
-                avatar={
-          movie.favourite ? (
-            <Avatar sx={styles.avatar}>
-              <FavoriteIcon />
-            </Avatar>
-          ) : null
-        }
-        title={
-          <Typography variant="h5" component="p">
-            {movie.title}{" "}
-          </Typography>
-        }
+     
+        
             <Typography variant="h5" component="h3">
                 Overview
             </Typography>
-
             <Typography variant="h6" component="p">
                 {movie.overview}
             </Typography>
-
             <Paper component="ul" sx={styles.chipSet}>
                 <li>
                     <Chip label="Genres" sx={styles.chipLabel} color="primary" />
