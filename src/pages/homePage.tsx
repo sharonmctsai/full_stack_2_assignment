@@ -83,6 +83,7 @@ const HomePage: React.FC = () => {
       const releaseDate = new Date(m.release_date);
       return releaseDateAfterFilter ? releaseDate >= new Date(releaseDateAfterFilter) : true;
     });
+    
 
   return (
     <>

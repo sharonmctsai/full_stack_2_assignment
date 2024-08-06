@@ -1,21 +1,16 @@
 const API_KEY = import.meta.env.VITE_TMDB_KEY;
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
-
 import { ActorDetailsProps, DiscoverMovies } from "../types/interfaces";
 import { DiscoverActors } from "../types/interfaces"; // Adjust the interface based on your needs
-
 export const getPopularActors = async (): Promise<DiscoverActors> => {
   const response = await fetch(
     `${import.meta.env.VITE_TMDB_BASE_URL}/person/popular?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=1`
   );
-
   if (!response.ok) {
     throw new Error('Failed to fetch popular actors');
   }
-
   return response.json();
 };
-
 export const getUpcomingMovies = async (): Promise<DiscoverMovies> => {
   const response = await fetch(
     `${import.meta.env.VITE_TMDB_BASE_URL}/movie/upcoming?api_key=${import.meta.env.VITE_TMDB_KEY}`
@@ -25,7 +20,6 @@ export const getUpcomingMovies = async (): Promise<DiscoverMovies> => {
   }
   return response.json();
 };
-
 export const getPopularMovies = async (): Promise<DiscoverMovies> => {
   const response = await fetch(
     `${import.meta.env.VITE_TMDB_BASE_URL}/movie/popular?api_key=${import.meta.env.VITE_TMDB_KEY}`
@@ -37,31 +31,25 @@ export const getPopularMovies = async (): Promise<DiscoverMovies> => {
 };
 
 
-export const getMovies = (args) => {
-  const [, pagePart] = args.queryKey;
-  const { page } = pagePart;
+export const getMovies = () => {
   return fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=${page}`
+    `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=1`
   ).then((response) => {
-    if (!response.ok) {
-      throw new Error(response.json().message);
-    }
+    if (!response.ok)
+      throw new Error(`Unable to fetch movies. Response status: ${response.status}`);
     return response.json();
   })
-  .catch((error) => {
-     throw error
-  });
+    .catch((error) => {
+      throw error
+    });
 };
-  
-export const getMovie = (args) => {
-  console.log(args)
-  const [, idPart] = args.queryKey;
-  const { id } = idPart;
+
+export const getMovie = (id: string) => {
   return fetch(
     `https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
   ).then((response) => {
     if (!response.ok) {
-      throw new Error(response.json().message);
+      throw new Error(`Failed to get movie data. Response status: ${response.status}`);
     }
     return response.json();
   })
@@ -69,7 +57,8 @@ export const getMovie = (args) => {
     throw error
  });
 };
-  
+
+
   export const getMovieImages = (id: string | number) => {
     return fetch(
       `https://api.themoviedb.org/3/movie/${id}/images?api_key=${import.meta.env.VITE_TMDB_KEY}`
@@ -83,7 +72,6 @@ export const getMovie = (args) => {
         throw error
       });
   };
-
   export const getMovieReviews = (id: string | number) => { //movie id can be string or number
     return fetch(
       `https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${import.meta.env.VITE_TMDB_KEY}`
@@ -94,7 +82,6 @@ export const getMovie = (args) => {
         return json.results;
       });
   };
-
   export const getGenres = () => {
     return fetch(
       "https://api.themoviedb.org/3/genre/movie/list?api_key=" + import.meta.env.VITE_TMDB_KEY + "&language=en-US"
@@ -107,7 +94,6 @@ export const getMovie = (args) => {
       throw error
    });
   };
-
   export const fetchActorDetails = async (actorId: string): Promise<ActorDetailsProps> => {
     const response = await fetch(`https://api.themoviedb.org/3/person/${actorId}?api_key=${API_KEY}`);
     if (!response.ok) {
@@ -117,6 +103,3 @@ export const getMovie = (args) => {
     }
     return response.json();
   };
-  
-
-  

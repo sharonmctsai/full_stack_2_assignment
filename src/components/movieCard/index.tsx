@@ -36,6 +36,10 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
 
   const isFavourite = favourites.find((id) => id === movie.id) ? true : false;
 
+  const handleAddToFavourite = (e: MouseEvent<HTMLButtonElement>) => {//NEW
+    e.preventDefault();
+    addToFavourites(movie);
+  };
   const handleAddToWatchlist = (e: MouseEvent<SVGSVGElement>) => {
     e.preventDefault();
     addToWatchlist(movie);
