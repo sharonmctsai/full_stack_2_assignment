@@ -4,7 +4,7 @@ import { getPopularMovies } from "../api/tmdb-api";
 import { useQuery } from "react-query";
 import Spinner from "../components/spinner";
 import AddToFavouritesIcon from "../components/cardIcons/addToFavourites";
-import FilterCard from "../components/filterMoviesCard";
+import FilterMoviesCard from "../components/filterMoviesCard";
 import Fab from "@mui/material/Fab";
 import Drawer from "@mui/material/Drawer";
 
@@ -18,6 +18,7 @@ const styles = {
 };
 
 const PopularMoviesPage: React.FC = () => {
+  const [page, setPage] = useState(1);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [titleFilter, setTitleFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("0");
@@ -25,9 +26,17 @@ const PopularMoviesPage: React.FC = () => {
   const [releaseDateBeforeFilter, setReleaseDateBeforeFilter] = useState("");
   const [releaseDateAfterFilter, setReleaseDateAfterFilter] = useState("");
 
-  const { data, error, isLoading, isError } = useQuery("popular", getPopularMovies);
+  const { data, error, isLoading, isError } = useQuery(["popular", { page }], () => getPopularMovies(page));
 
-  const handleChange = (type, value) => {
+  const handleNext = () => {
+    setPage((old) => old + 1);
+  };
+
+  const handleBack = () => {
+    setPage((old) => Math.max(old - 1, 1));
+  };
+
+  const handleChange = (type: string, value: string) => {
     switch (type) {
       case "title":
         setTitleFilter(value);
@@ -61,20 +70,26 @@ const PopularMoviesPage: React.FC = () => {
 
   const genreId = Number(genreFilter);
   const displayedMovies = movies
-    .filter((m) => m.title.toLowerCase().search(titleFilter.toLowerCase()) !== -1)
+    .filter((m) => m.title.toLowerCase().includes(titleFilter.toLowerCase()))
     .filter((m) => (genreId > 0 ? m.genre_ids.includes(genreId) : true))
     .filter((m) => (popularityFilter ? m.popularity >= Number(popularityFilter) : true))
-    .filter((m) => (releaseDateBeforeFilter ? m.release_date <= releaseDateBeforeFilter : true))
-    .filter((m) => (releaseDateAfterFilter ? m.release_date >= releaseDateAfterFilter : true));
+    .filter((m) => {
+      const releaseDate = new Date(m.release_date);
+      return releaseDateBeforeFilter ? releaseDate <= new Date(releaseDateBeforeFilter) : true;
+    })
+    .filter((m) => {
+      const releaseDate = new Date(m.release_date);
+      return releaseDateAfterFilter ? releaseDate >= new Date(releaseDateAfterFilter) : true;
+    });
 
   return (
     <>
       <PageTemplate
         title="Popular Movies"
         movies={displayedMovies}
-        action={(movie) => <AddToFavouritesIcon {...movie} />}
-        handleNext={null} // Add proper pagination handlers if needed
-        handleBack={null} // Add proper pagination handlers if needed
+        action={(movie) => <AddToFavouritesIcon movie={movie} />}
+        handleNext={handleNext}
+        handleBack={handleBack}
       />
       <Fab
         color="secondary"
@@ -85,7 +100,7 @@ const PopularMoviesPage: React.FC = () => {
         Filter
       </Fab>
       <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <FilterCard
+        <FilterMoviesCard
           onUserInput={handleChange}
           titleFilter={titleFilter}
           genreFilter={genreFilter}

@@ -1,139 +1,133 @@
-import React, { ChangeEvent } from "react";
-import { FilterOption, GenreData } from "../../types/interfaces"; 
-import { SelectChangeEvent } from "@mui/material";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
+import React from "react";
 import TextField from "@mui/material/TextField";
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { getGenres } from "../../api/tmdb-api";
-import { useQuery } from "react-query";
-import Spinner from '../spinner';
+import MenuItem from "@mui/material/MenuItem";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 
-const styles = {
-  root: {
-    maxWidth: 345,
-  },
-  formControl: {
-    margin: 1,
-    minWidth: 220,
-    backgroundColor: "rgb(255, 255, 255)",
-  },
-};
+const genres = [
+  { id: 0, name: "All" },
+  { id: 28, name: "Action" },
+  { id: 12, name: "Adventure" },
+  { id: 16, name: "Animation" },
+  { id: 35, name: "Comedy" },
+  { id: 80, name: "Crime" },
+  { id: 99, name: "Documentary" },
+  { id: 18, name: "Drama" },
+  { id: 10751, name: "Family" },
+  { id: 14, name: "Fantasy" },
+  { id: 36, name: "History" },
+  { id: 27, name: "Horror" },
+  { id: 10402, name: "Music" },
+  { id: 9648, name: "Mystery" },
+  { id: 10749, name: "Romance" },
+  { id: 878, name: "Science Fiction" },
+  { id: 10770, name: "TV Movie" },
+  { id: 53, name: "Thriller" },
+  { id: 10752, name: "War" },
+  { id: 37, name: "Western" },
+];
 
-interface FilterMoviesCardProps {
-  onUserInput: (f: FilterOption, s: string)  => void; 
-  titleFilter: string;
-  genreFilter: string;
-  releaseDateBeforeFilter: string;
-  releaseDateAfterFilter: string;
-}
-
-const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
+const FilterMoviesCard = ({
+  onUserInput,
   titleFilter,
   genreFilter,
+  popularityFilter,
   releaseDateBeforeFilter,
   releaseDateAfterFilter,
-  onUserInput,
 }) => {
-  const { data, error, isLoading, isError } = useQuery<GenreData, Error>("genres", getGenres);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
-  if (isError) {
-    return <h1>{(error as Error).message}</h1>;
-  }
-  const genres = data?.genres || [];
-  if (genres[0].name !== "All") {
-    genres.unshift({ id: "0", name: "All" });
-  }
-
-  const handleChange = (e: SelectChangeEvent | ChangeEvent<HTMLInputElement>, type: FilterOption, value: string) => {
-    e.preventDefault();
-    onUserInput(type, value);
+  const handleTextChange = (e) => {
+    onUserInput(e.target.name, e.target.value);
   };
 
-  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e, "title", e.target.value);
-  };
-
-  const handleGenreChange = (e: SelectChangeEvent) => {
-    handleChange(e, "genre", e.target.value);
-  };
-
-  const handleReleaseDateBeforeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e, "releaseDateBefore", e.target.value);
-  };
-
-  const handleReleaseDateAfterChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e, "releaseDateAfter", e.target.value);
+  const handleGenreChange = (e) => {
+    onUserInput("genre", e.target.value);
   };
 
   return (
-    <>
-      <Card sx={styles.root} variant="outlined">
-        <CardContent>
-          <Typography variant="h5" component="h1">
-            <FilterAltIcon fontSize="large" />
-            Filter the movies.
-          </Typography>
+    <Box sx={{ padding: 2, maxWidth: 500, margin: '0 auto' }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
           <TextField
-            sx={styles.formControl}
             id="filled-search"
-            label="Search field"
+            label="Title"
             type="search"
+            variant="filled"
+            name="title"
             value={titleFilter}
-            variant="filled"
             onChange={handleTextChange}
+            margin="normal"
+            InputProps={{
+              style: { fontSize: 20 },
+            }}
+            InputLabelProps={{
+              style: { fontSize: 20 },
+            }}
           />
-          <FormControl sx={styles.formControl}>
-            <InputLabel id="genre-label">Genre</InputLabel>
-            <Select
-              labelId="genre-label"
-              id="genre-select"
-              value={genreFilter}
-              onChange={handleGenreChange}
-            >
-              {genres.map((genre) => (
-                <MenuItem key={genre.id} value={genre.id}>
-                  {genre.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
           <TextField
-            sx={styles.formControl}
-            id="release-date-before"
-            label="Released Before"
+            id="filled-select-genre"
+            select
+            label="Genre"
+            value={genreFilter}
+            onChange={handleGenreChange}
+            variant="filled"
+            margin="normal"
+            InputProps={{
+              style: { fontSize: 20 },
+            }}
+            InputLabelProps={{
+              style: { fontSize: 20 },
+            }}
+          >
+            {genres.map((option) => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="filled-date-before"
+            label="Release Date Before"
             type="date"
+            variant="filled"
+            name="release_date_before"
             value={releaseDateBeforeFilter}
+            onChange={handleTextChange}
             InputLabelProps={{
               shrink: true,
+              style: { fontSize: 20 },
             }}
-            variant="filled"
-            onChange={handleReleaseDateBeforeChange}
+            InputProps={{
+              style: { fontSize: 20 },
+            }}
+            margin="normal"
           />
+        </Grid>
+        <Grid item xs={12}>
           <TextField
-            sx={styles.formControl}
-            id="release-date-after"
-            label="Released After"
+            id="filled-date-after"
+            label="Release Date After"
             type="date"
+            variant="filled"
+            name="release_date_after"
             value={releaseDateAfterFilter}
+            onChange={handleTextChange}
             InputLabelProps={{
               shrink: true,
+              style: { fontSize: 20 },
             }}
-            variant="filled"
-            onChange={handleReleaseDateAfterChange}
+            InputProps={{
+              style: { fontSize: 20 },
+            }}
+            margin="normal"
           />
-        </CardContent>
-      </Card>
-    </>
+        </Grid>
+      </Grid>
+    </Box>
   );
-}
+};
 
 export default FilterMoviesCard;
