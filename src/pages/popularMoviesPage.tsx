@@ -26,14 +26,17 @@ const PopularMoviesPage: React.FC = () => {
   const [releaseDateBeforeFilter, setReleaseDateBeforeFilter] = useState("");
   const [releaseDateAfterFilter, setReleaseDateAfterFilter] = useState("");
 
-  const { data, error, isLoading, isError } = useQuery(["popular", { page }], () => getPopularMovies(page));
+  const { data, error, isLoading, isError } = useQuery(
+    ["popular", page],
+    () => getPopularMovies(page)
+  );
 
   const handleNext = () => {
-    setPage((old) => old + 1);
+    setPage((prevPage) => prevPage + 1);
   };
 
   const handleBack = () => {
-    setPage((old) => Math.max(old - 1, 1));
+    setPage((prevPage) => Math.max(prevPage - 1, 1));
   };
 
   const handleChange = (type: string, value: string) => {
@@ -67,27 +70,20 @@ const PopularMoviesPage: React.FC = () => {
   }
 
   const movies = data ? data.results : [];
-
   const genreId = Number(genreFilter);
   const displayedMovies = movies
     .filter((m) => m.title.toLowerCase().includes(titleFilter.toLowerCase()))
     .filter((m) => (genreId > 0 ? m.genre_ids.includes(genreId) : true))
     .filter((m) => (popularityFilter ? m.popularity >= Number(popularityFilter) : true))
-    .filter((m) => {
-      const releaseDate = new Date(m.release_date);
-      return releaseDateBeforeFilter ? releaseDate <= new Date(releaseDateBeforeFilter) : true;
-    })
-    .filter((m) => {
-      const releaseDate = new Date(m.release_date);
-      return releaseDateAfterFilter ? releaseDate >= new Date(releaseDateAfterFilter) : true;
-    });
+    .filter((m) => (releaseDateBeforeFilter ? m.release_date <= releaseDateBeforeFilter : true))
+    .filter((m) => (releaseDateAfterFilter ? m.release_date >= releaseDateAfterFilter : true));
 
   return (
     <>
       <PageTemplate
         title="Popular Movies"
         movies={displayedMovies}
-        action={(movie) => <AddToFavouritesIcon movie={movie} />}
+        action={(movie) => <AddToFavouritesIcon {...movie} />}
         handleNext={handleNext}
         handleBack={handleBack}
       />
