@@ -4,7 +4,7 @@ import { getPopularMovies } from "../api/tmdb-api";
 import { useQuery } from "react-query";
 import Spinner from "../components/spinner";
 import AddToFavouritesIcon from "../components/cardIcons/addToFavourites";
-import FilterMoviesCard from "../components/filterMoviesCard";
+import FilterCard from "../components/filterMoviesCard";
 import Fab from "@mui/material/Fab";
 import Drawer from "@mui/material/Drawer";
 
@@ -18,7 +18,6 @@ const styles = {
 };
 
 const PopularMoviesPage: React.FC = () => {
-  const [page, setPage] = useState(1);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [titleFilter, setTitleFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("0");
@@ -26,20 +25,9 @@ const PopularMoviesPage: React.FC = () => {
   const [releaseDateBeforeFilter, setReleaseDateBeforeFilter] = useState("");
   const [releaseDateAfterFilter, setReleaseDateAfterFilter] = useState("");
 
-  const { data, error, isLoading, isError } = useQuery(
-    ["popular", page],
-    () => getPopularMovies(page)
-  );
+  const { data, error, isLoading, isError } = useQuery("popular", getPopularMovies);
 
-  const handleNext = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  const handleBack = () => {
-    setPage((prevPage) => Math.max(prevPage - 1, 1));
-  };
-
-  const handleChange = (type: string, value: string) => {
+  const handleChange = (type, value) => {
     switch (type) {
       case "title":
         setTitleFilter(value);
@@ -70,9 +58,10 @@ const PopularMoviesPage: React.FC = () => {
   }
 
   const movies = data ? data.results : [];
+
   const genreId = Number(genreFilter);
   const displayedMovies = movies
-    .filter((m) => m.title.toLowerCase().includes(titleFilter.toLowerCase()))
+    .filter((m) => m.title.toLowerCase().search(titleFilter.toLowerCase()) !== -1)
     .filter((m) => (genreId > 0 ? m.genre_ids.includes(genreId) : true))
     .filter((m) => (popularityFilter ? m.popularity >= Number(popularityFilter) : true))
     .filter((m) => (releaseDateBeforeFilter ? m.release_date <= releaseDateBeforeFilter : true))
@@ -84,8 +73,8 @@ const PopularMoviesPage: React.FC = () => {
         title="Popular Movies"
         movies={displayedMovies}
         action={(movie) => <AddToFavouritesIcon {...movie} />}
-        handleNext={handleNext}
-        handleBack={handleBack}
+        handleNext={null} // Add proper pagination handlers if needed
+        handleBack={null} // Add proper pagination handlers if needed
       />
       <Fab
         color="secondary"
@@ -96,7 +85,7 @@ const PopularMoviesPage: React.FC = () => {
         Filter
       </Fab>
       <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <FilterMoviesCard
+        <FilterCard
           onUserInput={handleChange}
           titleFilter={titleFilter}
           genreFilter={genreFilter}
