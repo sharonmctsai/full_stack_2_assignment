@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { MovieDetailsProps, MovieImage } from "../types/interfaces";
+import { useParams, Link } from "react-router-dom";
+import { MovieDetailsProps, MovieImage, CastMember } from "../types/interfaces";
 import MovieHeader from "../components/headerMovie/";
 import MovieDetails from "../components/movieDetails";
 import Grid from "@mui/material/Grid";
@@ -24,8 +24,9 @@ const MoviePage: React.FC = () => {
   const [movie, setMovie] = useState<MovieDetailsProps>();
   const [images, setImages] = useState<MovieImage[]>([]);
   const [similarMovies, setSimilarMovies] = useState<MovieDetailsProps[]>([]);
+  const [cast, setCast] = useState<CastMember[]>([]);
 
-  // Fetch movie details
+  // Fetch movie details including cast
   useEffect(() => {
     fetch(
       `https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
@@ -59,6 +60,17 @@ const MoviePage: React.FC = () => {
       });
   }, [id]);
 
+  // Fetch cast details
+  useEffect(() => {
+    fetch(
+      `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${import.meta.env.VITE_TMDB_KEY}`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        setCast(json.cast);
+      });
+  }, [id]);
+
   return (
     <>
       {movie ? (
@@ -77,6 +89,11 @@ const MoviePage: React.FC = () => {
                       <img
                         src={`https://image.tmdb.org/t/p/w500/${image.file_path}`}
                         alt={"Movie poster"}
+                        style={{ 
+                          border: '5px solid #ccc', // Frame color and width
+                          borderRadius: '8px',      // Optional: rounded corners
+                          padding: '5px'            // Optional: space between the image and the frame
+                        }}
                       />
                     </ImageListItem>
                   ))}
@@ -87,7 +104,7 @@ const MoviePage: React.FC = () => {
               <MovieDetails {...movie} />
 
               {/* Display similar movies */}
-              <h2>Similar Movies to : {movie.title} </h2>
+              <h2>Similar Movies to: {movie.title}</h2>
               <Grid container spacing={2}>
                 {similarMovies.map((similarMovie) => (
                   <Grid item xs={4} key={similarMovie.id}>
@@ -98,6 +115,25 @@ const MoviePage: React.FC = () => {
                         style={{ width: "60%" }}
                       />
                       <p>{similarMovie.title}</p>
+                    </div>
+                  </Grid>
+                ))}
+              </Grid>
+
+              {/* Display cast details */}
+              <h2>Cast</h2>
+              <Grid container spacing={2}>
+                {cast.map((actor) => (
+                  <Grid item xs={3} key={actor.id}>
+                    <div>
+                      <Link to={`/actors/${actor.id}`}>
+                        <img
+                          src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+                          alt={actor.name}
+                          style={{ width: "50%", borderRadius: "500px" }}
+                        />
+                        <p>{actor.name}</p>
+                      </Link>
                     </div>
                   </Grid>
                 ))}
