@@ -1,33 +1,31 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react";
 import PageTemplate from "../components/templateMovieListPage";
 import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
-import useFiltering from "../hooks/useFiltering";
-import MovieFilterUI, {
-  titleFilter,
-  genreFilter,
-} from "../components/movieFilterUI";
 import RemoveFromFavourites from "../components/cardIcons/removeFromFavourites";
 import WriteReview from "../components/cardIcons/writeReview";
+import FilterCard from "../components/filterMoviesCard";
+import Fab from "@mui/material/Fab";
+import Drawer from "@mui/material/Drawer";
 
-const titleFiltering = {
-  name: "title",
-  value: "",
-  condition: titleFilter,
-};
-const genreFiltering = {
-  name: "genre",
-  value: "0",
-  condition: genreFilter,
+const styles = {
+  fab: {
+    marginTop: 8,
+    position: "fixed",
+    top: 2,
+    right: 2,
+  },
 };
 
 const FavouriteMoviesPage: React.FC = () => {
   const { favourites: movieIds } = useContext(MoviesContext);
-  const { filterValues, setFilterValues, filterFunction } = useFiltering(
-    [titleFiltering, genreFiltering]
-  );
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [titleFilter, setTitleFilter] = useState("");
+  const [genreFilter, setGenreFilter] = useState("0");
+  const [releaseDateBeforeFilter, setReleaseDateBeforeFilter] = useState("");
+  const [releaseDateAfterFilter, setReleaseDateAfterFilter] = useState("");
 
   // Create an array of queries and run them in parallel.
   const favouriteMovieQueries = useQueries(
@@ -47,37 +45,62 @@ const FavouriteMoviesPage: React.FC = () => {
   }
 
   const allFavourites = favouriteMovieQueries.map((q) => q.data);
+  const genreId = Number(genreFilter);
+
   const displayedMovies = allFavourites
-    ? filterFunction(allFavourites)
-    : [];
+    .filter((m) => m.title.toLowerCase().includes(titleFilter.toLowerCase()))
+    .filter((m) => (genreId > 0 ? m.genre_ids.includes(genreId) : true))
+    .filter((m) => (releaseDateBeforeFilter ? m.release_date <= releaseDateBeforeFilter : true))
+    .filter((m) => (releaseDateAfterFilter ? m.release_date >= releaseDateAfterFilter : true));
 
-  const changeFilterValues = (type: string, value: string) => {
-    const changedFilter = { name: type, value: value };
-    const updatedFilterSet =
-      type === "title" ? [changedFilter, filterValues[1]] : [filterValues[0], changedFilter];
-    setFilterValues(updatedFilterSet);
+  const handleChange = (type: string, value: string) => {
+    switch (type) {
+      case "title":
+        setTitleFilter(value);
+        break;
+      case "genre":
+        setGenreFilter(value);
+        break;
+      case "release_date_before":
+        setReleaseDateBeforeFilter(value);
+        break;
+      case "release_date_after":
+        setReleaseDateAfterFilter(value);
+        break;
+      default:
+        break;
+    }
   };
-
 
   return (
     <>
-        <PageTemplate
+      <PageTemplate
         title="Favourite Movies"
         movies={displayedMovies}
-        action={(movie) => {
-          return (
-            <>
-              <RemoveFromFavourites {...movie} />
-              <WriteReview {...movie} />
-            </>
-          );
-        }}
+        action={(movie) => (
+          <>
+            <RemoveFromFavourites {...movie} />
+            <WriteReview {...movie} />
+          </>
+        )}
       />
-      <MovieFilterUI
-        onFilterValuesChange={changeFilterValues}
-        titleFilter={filterValues[0].value}
-        genreFilter={filterValues[1].value}
-      />
+      <Fab
+        color="secondary"
+        variant="extended"
+        onClick={() => setDrawerOpen(true)}
+        sx={styles.fab}
+      >
+        Filter
+      </Fab>
+      <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <FilterCard
+          onUserInput={handleChange}
+          titleFilter={titleFilter}
+          genreFilter={genreFilter}
+          releaseDateBeforeFilter={releaseDateBeforeFilter}
+          releaseDateAfterFilter={releaseDateAfterFilter}
+        />
+      </Drawer>
     </>
   );
 };
