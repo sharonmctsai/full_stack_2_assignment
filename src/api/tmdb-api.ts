@@ -103,3 +103,14 @@ export const getMovie = (id: string) => {
     }
     return response.json();
   };
+
+  // src/api/tmdb-api.js
+export const getSimilarMovies = async (id) => {
+  const response = await fetch(
+    `${process.env.REACT_APP_TMDB_BASE_URL}/movie/${id}/similar?api_key=${process.env.REACT_APP_TMDB_API_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error('Failed to fetch similar movies');
+  }
+  return response.json();
+};

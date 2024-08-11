@@ -1,6 +1,6 @@
-import React, {useState, useEffect}  from "react"; // replace existing react import
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { MovieDetailsProps, MovieImage} from "../types/interfaces";// replace existing MoviePageProps import
+import { MovieDetailsProps, MovieImage } from "../types/interfaces";
 import MovieHeader from "../components/headerMovie/";
 import MovieDetails from "../components/movieDetails";
 import Grid from "@mui/material/Grid";
@@ -13,31 +13,30 @@ const styles = {
     flexWrap: "wrap",
     justifyContent: "space-around",
   },
-  gridListTile: { 
-    width: "100%",
+  gridListTile: {
+    width: "80%",
     height: "auto",
   },
-
 };
 
-const MoviePage: React.FC= () => {
+const MoviePage: React.FC = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState<MovieDetailsProps>();
   const [images, setImages] = useState<MovieImage[]>([]);
+  const [similarMovies, setSimilarMovies] = useState<MovieDetailsProps[]>([]);
 
+  // Fetch movie details
   useEffect(() => {
     fetch(
       `https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
     )
-      .then((res) => {
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((movie) => {
-        // console.log(movie)
         setMovie(movie);
       });
   }, [id]);
 
+  // Fetch movie images
   useEffect(() => {
     fetch(
       `https://api.themoviedb.org/3/movie/${id}/images?api_key=${import.meta.env.VITE_TMDB_KEY}`
@@ -47,8 +46,18 @@ const MoviePage: React.FC= () => {
       .then((images) => {
         setImages(images);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
+
+  // Fetch similar movies
+  useEffect(() => {
+    fetch(
+      `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${import.meta.env.VITE_TMDB_KEY}`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        setSimilarMovies(json.results);
+      });
+  }, [id]);
 
   return (
     <>
@@ -57,7 +66,7 @@ const MoviePage: React.FC= () => {
           <MovieHeader {...movie} />
           <Grid container spacing={5} style={{ padding: "15px" }}>
             <Grid item xs={3}>
-              <div >
+              <div>
                 <ImageList sx={styles.imageListRoot} cols={1}>
                   {images.map((image) => (
                     <ImageListItem
@@ -65,10 +74,10 @@ const MoviePage: React.FC= () => {
                       sx={styles.gridListTile}
                       cols={1}
                     >
-                     <img
+                      <img
                         src={`https://image.tmdb.org/t/p/w500/${image.file_path}`}
-                        alt={'Image alternative'}
-                      />                    
+                        alt={"Movie poster"}
+                      />
                     </ImageListItem>
                   ))}
                 </ImageList>
@@ -76,6 +85,23 @@ const MoviePage: React.FC= () => {
             </Grid>
             <Grid item xs={9}>
               <MovieDetails {...movie} />
+
+              {/* Display similar movies */}
+              <h2>Similar Movies to : {movie.title} </h2>
+              <Grid container spacing={2}>
+                {similarMovies.map((similarMovie) => (
+                  <Grid item xs={4} key={similarMovie.id}>
+                    <div>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w500/${similarMovie.poster_path}`}
+                        alt={similarMovie.title}
+                        style={{ width: "60%" }}
+                      />
+                      <p>{similarMovie.title}</p>
+                    </div>
+                  </Grid>
+                ))}
+              </Grid>
             </Grid>
           </Grid>
         </>
@@ -85,4 +111,5 @@ const MoviePage: React.FC= () => {
     </>
   );
 };
+
 export default MoviePage;
