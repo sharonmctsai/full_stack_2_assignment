@@ -114,3 +114,15 @@ export const getSimilarMovies = async (id) => {
   }
   return response.json();
 };
+
+// Fetch actor's movie credits
+export const fetchActorMovies = async (id: string) => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/person/${id}/movie_credits?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch actor movies");
+  }
+  const data = await response.json();
+  return data.cast; // `cast` contains the movies where the actor is cast
+};

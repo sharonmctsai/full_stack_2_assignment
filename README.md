@@ -1,15 +1,25 @@
-# React + TypeScript + Vite # full_stack_2_assignment
+#Full stack 2 Assignment
 
 
-Demonstrate the knowledge of the React framework and ecosystem by designing and developing a SPA
 
-<h4>Features</h4>
-<ul>Favorites</ul>
-<ul>Watchlist</ul>
-<ul>Upcoming movies</ul>
-<ul>Most Popular movies</ul>
-<ul>Most Popular Actors</ul>
-<ul>Pagination on Home Page</ul>
+### Features
+#### UI
+
+* Favorites Page
+* Watchlist Page
+* Upcoming movies Page
+* Most Popular movies Page(parameterised URL)
+  *Detail view-Movie details
+  *Similar movies
+* Most Popular Actors Page(parameterised URL)
+  *Detail view-Actor Bio
+* Pagination on Home Page
+* Data caching
+  *Cast listed in movie details page
+* Additional movie filters
+  *Released after/before
+* Data caching
+* Data caching
 
 List of favorite of movies tagged from TMDB
 Biography and details of popular actors
