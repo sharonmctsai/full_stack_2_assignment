@@ -18,14 +18,17 @@
 - An additional data entity type, e.g. Actor, 
 - Data caching
     1. Cast listed in movie details page
-* Additional movie filters
-    *Released after/before
-* Data caching
-* Data caching
 
+####  Functionality-
+* Additional movie filters
+    1. Released after/before
+* Create My fantasy movie
 
 ## Features Design
 
 
 List of favorite of movies tagged from TMDB
+![favorite text](assets/favorite.png)
+
+
 Biography and details of popular actors
