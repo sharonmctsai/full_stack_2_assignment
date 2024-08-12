@@ -8,19 +8,21 @@
 * Watchlist Page
 * Upcoming movies Page
 * Most Popular movies Page(parameterised URL)
-    *Detail view-Movie details
-    *Similar movies
+    1. Detail view-Movie details
+    2. Similar movies
 * Most Popular Actors Page(parameterised URL)
-    *Detail view-Actor Bio
+    1. Detail view-Actor Bio
 * Pagination on Home Page
-* Data caching
-    *Cast listed in movie details page
+
+####  Data Model-
+- An additional data entity type, e.g. Actor, 
+- Data caching
+    1. Cast listed in movie details page
 * Additional movie filters
     *Released after/before
 * Data caching
 * Data caching
-* Abacus
-    *absolute
+
 
 ## Features Design
 
