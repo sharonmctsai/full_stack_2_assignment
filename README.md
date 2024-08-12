@@ -28,28 +28,49 @@
 
 ### Favorites Page
 > List of favorite of movies tagged from TMDB
+
+
 ![favorite text](public/image/favorite.png)
+![favorite detailstext](public/image/favdetails.png)
 
 ### Watchlist Page
+![watchlist text](public/image/watchlist.png)
 
 ### Upcoming movies Page
+![Upcoming text](public/image/upcoming.png)
 
 ### Most Popular movies
 >1. Detail view-Movie details
-
-
 > 2. Similar movies
+
+
+![Popular movies text](public/image/moviedetails.png)
+
+
+
 ### Most Popular Actors Page
 >1. Detail view-Actor Bio
+Biography and details of popular actors
+
+![Actor Bio](public/image/actordetails.png)
+
 
 ###  Pagination on Home Page
+
+![Pagination text](public/image/pagination.png)
 
 ### Data caching
 > Cast listed in movie details page
 
+![cast text](public/image/castmovie.png)
+
 ### Additional movie filters
 > Released after/before
+
+![filter text](public/image/filter.png)
+
 > Create My fantasy movie
 
+![create text](public/image/create.png)
 
-Biography and details of popular actors
+
