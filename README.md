@@ -28,7 +28,7 @@
 
 ### Favorites Page
 > List of favorite of movies tagged from TMDB
-<img src="/assets/favorite.png">
+![favorite text](public/image/favorite.png)
 
 ### Watchlist Page
 
