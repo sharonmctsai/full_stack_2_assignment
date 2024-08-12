@@ -26,9 +26,10 @@
 
 ## Features Design
 
+### Favorites Page
+> List of favorite of movies tagged from TMDB
+<img src="/assets/favorite.png">
 
-List of favorite of movies tagged from TMDB
-![favorite text](assets/favorite.png)
 
 
 Biography and details of popular actors
