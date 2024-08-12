@@ -19,9 +19,11 @@
     *Released after/before
 * Data caching
 * Data caching
+* Abacus
+    *absolute
 
 ## Features Design
-   ---
+
 
 List of favorite of movies tagged from TMDB
 Biography and details of popular actors
