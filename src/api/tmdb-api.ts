@@ -1,5 +1,4 @@
 const API_KEY = import.meta.env.VITE_TMDB_KEY;
-const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 import { ActorDetailsProps, DiscoverMovies } from "../types/interfaces";
 import { DiscoverActors } from "../types/interfaces"; // Adjust the interface based on your needs
 export const getPopularActors = async (): Promise<DiscoverActors> => {
