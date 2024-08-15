@@ -75,14 +75,8 @@ const HomePage: React.FC = () => {
     .filter((m) => m.title.toLowerCase().includes(titleFilter.toLowerCase()))
     .filter((m) => (genreId > 0 ? m.genre_ids.includes(genreId) : true))
     .filter((m) => (popularityFilter ? m.popularity >= Number(popularityFilter) : true))
-    .filter((m) => {
-      const releaseDate = new Date(m.release_date);
-      return releaseDateBeforeFilter ? releaseDate <= new Date(releaseDateBeforeFilter) : true;
-    })
-    .filter((m) => {
-      const releaseDate = new Date(m.release_date);
-      return releaseDateAfterFilter ? releaseDate >= new Date(releaseDateAfterFilter) : true;
-    });
+    .filter((m) => (releaseDateBeforeFilter ? m.release_date <= releaseDateBeforeFilter : true))
+    .filter((m) => (releaseDateAfterFilter ? m.release_date >= releaseDateAfterFilter : true));
     
 
   return (
@@ -91,11 +85,10 @@ const HomePage: React.FC = () => {
         title="Discover Movies"
         movies={displayedMovies}
         action={(movie) => <AddToFavouritesIcon {...movie} />}
-        handleNext={handleNext}
-        handleBack={handleBack}
+  
       />
       <Fab
-        color="secondary"
+       
         variant="extended"
         onClick={() => setDrawerOpen(true)}
         sx={styles.fab}

@@ -18,10 +18,34 @@ import Avatar from "@mui/material/Avatar";
 import { MoviesContext } from "../../contexts/moviesContext";
 
 const styles = {
-  card: { maxWidth: 345 },
-  media: { height: 500 },
-  avatar: {
-    backgroundColor: "rgb(255, 0, 0)",
+  card: {
+    position: "relative",
+    borderRadius: 5,
+    overflow: "hidden",
+    backgroundColor: "#000", // Set background color to black
+    color: "white", // Ensure text is visible on black background
+    boxShadow: "0 5px 15px rgba(0, 0, 0, 0.3)",
+    transition: "transform 0.3s, box-shadow 0.3s",
+    "&:hover": {
+      transform: "scale(1.05)",
+      boxShadow: "0 10px 20px rgba(255, 255, 255, 0.7)",
+      outline: "2px solid rgba(255, 255, 255)", // Add white outline on hover
+    },
+  },
+  media: {
+    height: "1000%",
+    paddingTop: "150%", // 2:3 aspect ratio
+  },
+  overlay: {
+    position: "absolute",
+    top: 10, // Change to top
+    left: 0,
+    right: 0,
+    padding: "10px",
+    backgroundColor: "rgba(0, 0, 0)",
+    color: "white",
+    textAlign: "center",
+    opacity: 1, // Set the overlay to be fully visible
   },
 };
 
@@ -36,7 +60,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
 
   const isFavourite = favourites.find((id) => id === movie.id) ? true : false;
 
-  const handleAddToFavourite = (e: MouseEvent<HTMLButtonElement>) => {//NEW
+  const handleAddToFavourite = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     addToFavourites(movie);
   };
@@ -56,11 +80,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
             </Avatar>
           ) : null
         }
-        title={
-          <Typography variant="h5" component="p">
-            {movie.title}{" "}
-          </Typography>
-        }
+       
       />
       <CardMedia
         sx={styles.media}
@@ -70,7 +90,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
             : img
         }
       />
-      <CardContent>
+      
+      <CardContent sx={styles.overlay}>
         <Grid container>
           <Grid item xs={6}>
             <Typography variant="h6" component="p">
@@ -86,6 +107,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
           </Grid>
         </Grid>
       </CardContent>
+
       <CardActions disableSpacing>
         {action(movie)}
         <PlaylistAddIcon onClick={handleAddToWatchlist} />

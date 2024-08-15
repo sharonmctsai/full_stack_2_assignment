@@ -75,7 +75,6 @@ const UpcomingPage: React.FC = () => {
         action={(movie) => <AddToFavouritesIcon {...movie} />}
       />
       <Fab
-        color="secondary"
         variant="extended"
         onClick={() => setDrawerOpen(true)}
         sx={styles.fab}

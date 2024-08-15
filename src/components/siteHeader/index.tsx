@@ -11,13 +11,18 @@ import Menu from "@mui/material/Menu";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { AuthContext } from "../../contexts/authContext";
 
 const styles = {
   title: {
     flexGrow: 1,
   },
+
+  menuItem: {
+    color: "white",
+  },
   activeButton: {
-    backgroundColor: 'rgba(255, 255, 153,0.5)',
+    backgroundColor: 'rgba(255, 255, 255,0.1)',
   },
 };
 
@@ -31,6 +36,7 @@ const SiteHeader: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
+  
   const menuOptions = [
     { label: "Home", path: "/" },
     { label: "Favorites", path: "/movies/favourites" },
@@ -52,14 +58,13 @@ const SiteHeader: React.FC = () => {
 
   return (
     <>
-      <AppBar position="fixed" elevation={0} color="secondary">
+      <AppBar position="fixed" elevation={0}         sx={{ backgroundColor: "#191919", boxShadow: "none" }}
+>
         <Toolbar>
           <Typography variant="h4" sx={styles.title}>
             TMDB Client
           </Typography>
-          <Typography variant="h6" sx={styles.title}>
-            All you ever wanted to know about Movies!
-          </Typography>
+      
           {isMobile ? (
             <>
               <IconButton

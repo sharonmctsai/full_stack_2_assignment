@@ -77,7 +77,6 @@ const PopularMoviesPage: React.FC = () => {
         handleBack={null} // Add proper pagination handlers if needed
       />
       <Fab
-        color="secondary"
         variant="extended"
         onClick={() => setDrawerOpen(true)}
         sx={styles.fab}
