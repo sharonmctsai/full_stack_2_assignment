@@ -111,3 +111,10 @@ export interface ActorDetailsProps {
   place_of_birth: string;
   profile_path: string;
 }
+// Auth 
+
+export interface AuthContextInterface {
+  token: string | null;
+  authenticate: ((username: string, password: string) => void);
+  signout: () => void;
+}

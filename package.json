@@ -26,7 +26,8 @@
     "react-hook-form": "^7.49.3",
     "react-i18next": "^15.0.1",
     "react-query": "^3.39.3",
-    "react-router-dom": "^6.26.0"
+    "react-router-dom": "^6.26.0",
+    "supabase": "^1.190.0"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.4.0",

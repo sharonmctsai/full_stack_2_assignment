@@ -27,9 +27,11 @@ const HomePage: React.FC = () => {
   const [releaseDateAfterFilter, setReleaseDateAfterFilter] = useState("");
 
   const { data, error, isLoading, isError } = useQuery(
-    ["discover", { page }],
-    getMovies
+    ["discover", page],
+    () => getMovies(page),
+    { keepPreviousData: true } // Optional: keeps previous data while fetching new data
   );
+  
 
   const handleNext = () => {
     setPage((old) => old + 1);
@@ -85,7 +87,8 @@ const HomePage: React.FC = () => {
         title="Discover Movies"
         movies={displayedMovies}
         action={(movie) => <AddToFavouritesIcon {...movie} />}
-  
+        handleNext={handleNext}
+        handleBack={handleBack}
       />
       <Fab
        

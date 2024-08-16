@@ -22,7 +22,6 @@
 ####  Functionality-
 * Additional movie filters
     1. Released after/before
-* Create My fantasy movie
 
 ## Features Design
 
@@ -31,7 +30,6 @@
 
 
 ![favorite text](public/image/favorite.png)
-![favorite detailstext](public/image/favdetails.png)
 
 ### Watchlist Page
 ![watchlist text](public/image/watchlist.png)
@@ -69,8 +67,5 @@ Biography and details of popular actors
 
 ![filter text](public/image/filter.png)
 
-> Create My fantasy movie
-
-![create text](public/image/create.png)
 
 

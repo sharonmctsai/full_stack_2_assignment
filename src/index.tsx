@@ -14,9 +14,10 @@ import AddMovieReviewPage from './pages/addMovieReviewPage';
 import UpcomingPage from './pages/upcomingPage'; // NEW
 import PopularActorsPage from "./pages/popularActorsPage";
 import PopularMoviesPage from "./pages/popularMoviesPage";
-import AddFantasyMoviePage from "./pages/AddFantasyMoviePage";
 import ActorDetailsPage from "./pages/actorDetailsPage";
-
+import AuthProvider from "./contexts/authContext";
+import LoginPage from "./pages/loginPage";
+import ProtectedRoute from './components/protectedRoute';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,12 +34,18 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
+    <AuthProvider>
       <SiteHeader />  
       <MoviesContextProvider>  
       <Routes>
       <Route path="/reviews/:id" element={<MovieReviewPage/>} />
-        <Route path="/movies/favourites" element={<FavouriteMoviesPage />} />
-        <Route path="/movies/:id" element={<MoviePage />} />
+  {/* Movie Routes */}
+  <Route path="/movies/favourites" element={
+                      <ProtectedRoute>
+                        <FavouriteMoviesPage />
+                      </ProtectedRoute>
+                    } />
+                         <Route path="/movies/:id" element={<MoviePage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/reviews/form" element={<AddMovieReviewPage/>} />
@@ -46,12 +53,13 @@ const App = () => {
         <Route path="/movies/upcoming" element={<UpcomingPage/>} />
         <Route path="/movies/popular" element={<PopularMoviesPage/>} />
         <Route path="/actors/popular" element={<PopularActorsPage />} /> 
-        <Route path="/movies/fantasy/add" element={<AddFantasyMoviePage />} /> {/* New route */}
         <Route path="/actors/:id" element={<ActorDetailsPage />} />
 
+        <Route path="/login" element={<LoginPage />} />
 
       </Routes>
       </MoviesContextProvider>  
+      </AuthProvider>
     </BrowserRouter>
     <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
